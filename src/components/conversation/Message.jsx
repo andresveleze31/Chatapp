@@ -4,7 +4,7 @@ import { Chat_History } from "../../data";
 import { DocMsg, LinkMsg, MediaMsg, ReplyMsg, TextMsg, TimeLine } from "./MessageTypes";
 
 
-function Message() {
+function Message({menu}) {
   
 
   return (
@@ -19,18 +19,18 @@ function Message() {
             case "msg":
               switch (el.subtype) {
                 case "img":
-                  return <MediaMsg el={el} />
+                  return <MediaMsg el={el} menu={menu} />
                 case "doc":
-                  return <DocMsg  el={el}/>
+                  return <DocMsg  el={el} menu={menu}/>
 
                 case "link":
-                  return <LinkMsg el={el} />
+                  return <LinkMsg el={el} menu={menu} />
 
                 case "reply":
-                  return <ReplyMsg el={el} />
+                  return <ReplyMsg el={el} menu={menu} />
 
                 default:
-                  return <TextMsg key={el.id} el={el} />;
+                  return <TextMsg key={el.id} el={el} menu={menu} />;
               }
             default:
               // Unreachable code

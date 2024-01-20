@@ -5,7 +5,7 @@ import { useTheme } from "@mui/material/styles";
 import { DotsThreeVertical, DownloadSimple, Image } from "phosphor-react";
 import { Message_options } from "../../data";
 
-function DocMsg({ el }) {
+function DocMsg({ el, menu }) {
   const theme = useTheme();
 
   return (
@@ -37,14 +37,20 @@ function DocMsg({ el }) {
               <DownloadSimple />
             </IconButton>
           </Stack>
-          <Typography variant="body2" sx={{color: el.incoming ? theme.palette.text : "#fff"}}>{el.message}</Typography>
+          <Typography
+            variant="body2"
+            sx={{ color: el.incoming ? theme.palette.text : "#fff" }}
+          >
+            {el.message}
+          </Typography>
         </Stack>
       </Box>
+      {menu && <MessageOptions />}
     </Stack>
   );
 }
 
-function LinkMsg({ el }) {
+function LinkMsg({ el, menu }) {
   const theme = useTheme();
 
   return (
@@ -95,11 +101,12 @@ function LinkMsg({ el }) {
           </Stack>
         </Stack>
       </Box>
+      {menu && <MessageOptions />}
     </Stack>
   );
 }
 
-function ReplyMsg({ el }) {
+function ReplyMsg({ el, menu }) {
   const theme = useTheme();
 
   return (
@@ -137,11 +144,12 @@ function ReplyMsg({ el }) {
           </Typography>
         </Stack>
       </Box>
+      {menu && <MessageOptions />}
     </Stack>
   );
 }
 
-function MediaMsg({ el }) {
+function MediaMsg({ el, menu }) {
   const theme = useTheme();
 
   return (
@@ -170,11 +178,12 @@ function MediaMsg({ el }) {
           </Typography>
         </Stack>
       </Box>
+      {menu && <MessageOptions />}
     </Stack>
   );
 }
 
-function TextMsg({ el }) {
+function TextMsg({ el, menu }) {
   const theme = useTheme();
   return (
     <Stack direction={"row"} justifyContent={el.incoming ? "start" : "end"}>
@@ -195,7 +204,7 @@ function TextMsg({ el }) {
           {el.message}
         </Typography>
       </Box>
-      <MessageOptions />
+      {menu && <MessageOptions />}
     </Stack>
   );
 }
