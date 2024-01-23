@@ -1,10 +1,25 @@
-import { app } from "./app.js";
-import http from "http";
+import express from "express";
+import dotenv from "dotenv";
+import connectDB from "./config/db.js";
 
-const server = http.createServer(app);
+//Routers
+import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
-const port = process.env.PORT || 8000;
+const app = express();
 
-server.listen(port, () => {
-    console.log(`App running on port ${port}`);
-} );
+app.use(express.json());
+
+dotenv.config();
+
+//Connect DB.
+connectDB();
+
+//Routing
+app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
+
+//Routing.
+app.listen(process.env.PORT, () => {
+    console.log("Escuchando en puerto " + process.env.PORT);
+})
