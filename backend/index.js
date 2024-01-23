@@ -19,6 +19,7 @@ connectDB();
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 
+
 //Routing.
 app.listen(process.env.PORT, () => {
     console.log("Escuchando en puerto " + process.env.PORT);

@@ -1,47 +1,28 @@
-import sgMail from "@sendgrid/mail";
+import nodemailer from "nodemailer";
 
-sgMail.setApiKey(process.env.SG_KEY);
+async function registerEmail(datos) {
 
-const sendSGMail = async ({
-  recipient,
-  sender,
-  subject,
-  html,
-  text,
-  attachments,
-}) => {
+  console.log(datos); 
+  const { email, name, newOtp } = datos;
 
-  try {
-    const from = sender || "andresvelezecheverry@gmail.com";
+  const transport = nodemailer.createTransport({
+    host: "sandbox.smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: "9adc90a6ea3f90",
+      pass: "123962e759e6d6",
+    },
+  });
 
-    const msg = {
-        to: recipient, //Email o reciever
-        from: from, //Verified Sender.
-        subject,
-        html: html,
-        text: text,
-        attachments
-    }
-
-    return sgMail.send(msg);
-
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-async function sendEmail(args){
-
-    if(process.env.NODE_ENV === "development"){
-        return new Promise.resolve();
-    }
-    else{
-        return sendSGMail;(args);
-    }
-
-
+  //Informacon EMAIL.
+  const info = await transport.sendMail({
+    from: "Tawk - Your Chat Application",
+    to: email,
+    subject: "Tawk - Confirm Confirm",
+    text: "Confirma you Accout here...",
+    html: `<p>Hi: ${name} Confirm your account in Tawk</p>
+      <p>Your OTP is ${newOtp}. This is valid for 10 Mins.</p> `,
+  });
 }
 
-export{
-    sendEmail
-}
+export { registerEmail };

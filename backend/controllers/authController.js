@@ -5,7 +5,7 @@ import otpGenerator from "otp-generator";
 import crypto from "crypto";
 import { promisify } from "util";
 import jwt from "jsonwebtoken";
-import { sendEmail } from "../helpers/mailer.js";
+import { registerEmail } from "../helpers/mailer.js";
 
 //REGISTER New User
 async function register(req, res, next) {
@@ -42,6 +42,8 @@ async function register(req, res, next) {
 
     //Generate OTP and send email to user.
     req.userId = newUser._id;
+    req.email = newUser.email;
+    req.firstName = newUser.firstName;
 
     next();
   }
@@ -59,19 +61,19 @@ async function sendOTP(req, res, next) {
 
   const otp_expiry_time = Date.now() + 10 * 60 * 1000;
 
-  await User.findByIdAndUpdate(userId, {
-    otp: newOtp,
-    otp_expiry_time,
-  });
+  const userUpdated = await User.findById(userId);
+
+  userUpdated.otp = newOtp.toString();
+  userUpdated.otp_expiry_time = otp_expiry_time;
+  userUpdated.save();
 
   // TODO. Send Mail
 
-  sendEmail({
-    from: "andresvelezecheverry@gmail.com",
-    to: "example@gmail.com",
-    subject: "OTP for Tawk",
-    text: `Your OTP is ${newOtp}. This is valid for 10 Mins.`,
-  })
+  registerEmail({
+    email: req.email,
+    name: req.firstName,
+    newOtp,
+  });
 
   return res.status(200).json({
     status: "Success",
@@ -107,7 +109,7 @@ async function verifyOTP(req, res, next) {
   //OTP is correct
 
   user.verified = true;
-  user.otp = undefined;
+  user.otp = "";
 
   await user.save();
 
@@ -116,7 +118,7 @@ async function verifyOTP(req, res, next) {
 
   return res.status(200).json({
     status: "Success",
-    message: "OTp verified successfully",
+    message: "OTP verified successfully",
     token,
   });
 }
@@ -132,7 +134,7 @@ async function login(req, res) {
     });
   }
 
-  const user = await User.findOne({ email, password }).select("+password");
+  const user = await User.findOne({ email }).select("+password");
 
   if (!user || !(await user.correctPassword(password))) {
     return res.status(400).json({
