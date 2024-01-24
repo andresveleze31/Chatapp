@@ -16,6 +16,8 @@ import { Gear } from "phosphor-react";
 import { faker } from "@faker-js/faker";
 import useSettings from "../../hooks/useSettings.js";
 import { useNavigate } from "react-router-dom";
+import { LogoutUser } from "../../redux/slices/auth.js";
+import { useDispatch } from "react-redux";
 
 const getPath = (index) => {
   switch (index) {
@@ -31,7 +33,6 @@ const getPath = (index) => {
 };
 
 const getMenuPath = (index) => {
-
   switch (index) {
     case 0:
       return "/profile";
@@ -41,10 +42,11 @@ const getMenuPath = (index) => {
       //TODO => Update tojen, setAuth to false
       return "/auth/login";
   }
-
-}
+};
 
 function Sidebar() {
+  const dispatch = useDispatch();
+
   const theme = useTheme();
   const { onToggleMode } = useSettings();
 
@@ -203,14 +205,18 @@ function Sidebar() {
                     <MenuItem
                       onClick={() => {
                         handleClick();
-                        
                       }}
                     >
                       {" "}
                       <Stack
-                      onClick={() => {
-                        navigate(getMenuPath(idx));
-                      }}
+                        onClick={() => {
+                          //If idx 2 the dispatch logout
+                          if (idx === 2) {
+                            dispatch(LogoutUser());
+                          } else {
+                            navigate(getMenuPath(idx));
+                          }
+                        }}
                         sx={{ width: 100 }}
                         direction={"row"}
                         alignItems={"center"}

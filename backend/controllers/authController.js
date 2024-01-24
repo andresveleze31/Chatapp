@@ -5,7 +5,7 @@ import otpGenerator from "otp-generator";
 import crypto from "crypto";
 import { promisify } from "util";
 import jwt from "jsonwebtoken";
-import { registerEmail } from "../helpers/mailer.js";
+import { passwordChangedEmail, registerEmail, resetPasswordEmail } from "../helpers/mailer.js";
 
 //REGISTER New User
 async function register(req, res, next) {
@@ -211,11 +211,17 @@ async function forgotPassword(req, res, next) {
 
   // 2) Generate the random
   const resetToken = user.createPasswordResetToken();
+  await user.save({ validateBeforeSave: false });
+  console.log(resetToken);
 
-  const resetURL = `https://tawk.com/auth/reset-password/?code=${resetToken}`;
+  const resetURL = `http://localhost:3000/auth/new-password/?token=${resetToken}`;
 
   try {
-    //TODO => Send Email with RESET URL
+    resetPasswordEmail({
+      email: user.email,
+      name: user.firstName,
+      resetURL,
+    });
 
     return res.status(200).json({
       status: "Success",
@@ -238,7 +244,7 @@ async function resetPassword(req, res, next) {
   //1) Get user based token.
   const hashedToken = crypto
     .createHash("sha256")
-    .update(req.params.token)
+    .update(req.body.token)
     .digest("hex");
 
   const user = await User.findOne({
@@ -267,6 +273,10 @@ async function resetPassword(req, res, next) {
 
   //TODO Send an email to user informing about password reset.
 
+  passwordChangedEmail({
+    email: user.email,
+    name: user.firstName,
+  });
   const token = generateJWToken(user._id);
 
   return res.status(200).json({

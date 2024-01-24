@@ -1,16 +1,27 @@
 import React, { useState } from "react";
 import FormProvider from "../../components/hook-form/FormProvider";
 
-import {Link as RouterLink} from "react-router-dom"
+import { Link as RouterLink } from "react-router-dom";
 
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Alert, Button, IconButton, InputAdornment, Link, Stack } from "@mui/material";
+import {
+  Alert,
+  Button,
+  IconButton,
+  InputAdornment,
+  Link,
+  Stack,
+} from "@mui/material";
 import { RHFTextField } from "../../components/hook-form";
 import { Eye, EyeSlash } from "phosphor-react";
+import { LoginUser } from "../../redux/slices/auth";
+import { useDispatch } from "react-redux";
 
 function LoginForm() {
+  const dispatch = useDispatch();
+
   const [showPassword, setShowPassword] = useState(false);
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -20,8 +31,8 @@ function LoginForm() {
   });
 
   const defaultValues = {
-    email: "demo@tawk.com",
-    password: "demo1234",
+    email: "jlsanchez@gmail.com",
+    password: "password2",
   };
 
   const methods = useForm({
@@ -39,6 +50,8 @@ function LoginForm() {
   const onSubmit = async (data) => {
     try {
       //Submit data to backend
+
+      dispatch(LoginUser(data));
     } catch (error) {
       console.log(error);
       reset();
@@ -75,16 +88,35 @@ function LoginForm() {
           }}
         />
       </Stack>
-      
-      <Stack alignItems={"flex-end"} sx={{my:2}}>
-        <Link component={RouterLink} to="/auth/reset-password" variant="body2" color={"inherit"} underline="always">
-            Forgot Password?
+
+      <Stack alignItems={"flex-end"} sx={{ my: 2 }}>
+        <Link
+          component={RouterLink}
+          to="/auth/reset-password"
+          variant="body2"
+          color={"inherit"}
+          underline="always"
+        >
+          Forgot Password?
         </Link>
       </Stack>
-      <Button fullWidth color="inherit" size="large" type="submit" variant="contained" sx={{bgcolor: "text.primary", color: (theme) => theme.palette.mode ==="light" ? "common.white" : "grey.800", "&:hover":{
-        bgcolor: "text.primary",
-        color: (theme) => theme.palette.mode === "light" ? "common.white": "grey.800"
-      } }}>
+      <Button
+        fullWidth
+        color="inherit"
+        size="large"
+        type="submit"
+        variant="contained"
+        sx={{
+          bgcolor: "text.primary",
+          color: (theme) =>
+            theme.palette.mode === "light" ? "common.white" : "grey.800",
+          "&:hover": {
+            bgcolor: "text.primary",
+            color: (theme) =>
+              theme.palette.mode === "light" ? "common.white" : "grey.800",
+          },
+        }}
+      >
         Login
       </Button>
     </FormProvider>
