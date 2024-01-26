@@ -18,7 +18,7 @@ import {
   MagnifyingGlass,
   Users,
 } from "phosphor-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChatList } from "../../data";
 import { SimpleBarStyle } from "../../components/Scrollbar";
 import {
@@ -28,10 +28,23 @@ import {
 } from "../../components/Search";
 import ChatElement from "../../components/ChatElement";
 import Friends from "../../sections/main/Friends";
+import { socket } from "../../socket";
+import { useSelector } from "react-redux";
+
+const user_id = window.localStorage.getItem("user_ID")
 
 function Chats() {
   const [openDialog, setOpenDialog] = useState(false);
   const theme = useTheme();
+
+  const {conversations} = useSelector((state) => state.conversation.direct_chat);
+
+  useEffect(() => {
+    socket.emit("get_direct_conversations", {user_id}, (data) => {
+      //data => list of conversations
+
+    });
+  }, [])
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -101,7 +114,7 @@ function Chats() {
             sx={{ flexGrow: 1, overflow: "scroll", height: "100%" }}
           >
             <Stack spacing={2.4}>
-              <Typography
+              {/* <Typography
                 variant="subtitle2"
                 sx={{
                   color: theme.palette.mode === "light" ? "#676767" : "fff",
@@ -111,7 +124,7 @@ function Chats() {
               </Typography>
               {ChatList.filter((el) => el.pinned).map((el) => {
                 return <ChatElement {...el} />;
-              })}
+              })} */}
             </Stack>
             <Stack spacing={2.4}>
               <Typography
@@ -123,9 +136,11 @@ function Chats() {
               >
                 All Chats
               </Typography>
-              {ChatList.filter((el) => !el.pinned).map((el) => {
-                return <ChatElement {...el} />;
-              })}
+              {conversations
+                .filter((el) => !el.pinned)
+                .map((el) => {
+                  return <ChatElement {...el} />;
+                })}
             </Stack>
           </Stack>
         </Stack>

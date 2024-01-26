@@ -1,7 +1,16 @@
 import { Dialog, DialogContent, Stack, Tab, Tabs } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FetchFriendRequest, FetchFriends, FetchUsers } from "../../redux/slices/app";
+import {
+  FetchFriendRequest,
+  FetchFriends,
+  FetchUsers,
+} from "../../redux/slices/app";
+import {
+  FriendComponent,
+  FriendRequestComponent,
+  UserComponent,
+} from "../../components/Friends";
 
 const UsersList = () => {
   const dispatch = useDispatch();
@@ -16,7 +25,7 @@ const UsersList = () => {
     <>
       {users.map((el, idx) => {
         //TODO => Render UserComponent
-        return <></>;
+        return <UserComponent key={el._id} {...el} />;
       })}
     </>
   );
@@ -30,13 +39,14 @@ const FriendsList = () => {
   }, []);
 
   const { friends } = useSelector((state) => state.app);
+  console.log(friends);
   const friendsArray = friends.friends;
 
   return (
     <>
       {friendsArray.map((el, idx) => {
-        //TODO => Render FriendComponent
-        return <></>;
+        // Render FriendComponent
+        return <FriendComponent key={el._id} {...el} />;
       })}
     </>
   );
@@ -55,7 +65,9 @@ const FriendRequestList = () => {
     <>
       {friendRequests.map((el, idx) => {
         //TODO => Render friendRequestsComponent
-        return <></>;
+        return (
+          <FriendRequestComponent key={el._id} {...el.sender} id={el._id} />
+        );
       })}
     </>
   );
@@ -92,13 +104,13 @@ function Friends({ open, handleClose }) {
               switch (value) {
                 case 0:
                   //Display all Users
-                  return <UsersList />
+                  return <UsersList />;
                 case 1:
                   //Display all Friends
-                  return <FriendsList />
+                  return <FriendsList />;
                 case 2:
                   //Displat all friend request
-                  return <FriendRequestList />
+                  return <FriendRequestList />;
                 default:
                   break;
               }
