@@ -6,12 +6,13 @@ import authReducer from "./slices/auth.js";
 //Slices
 
 const rootPeristConfig = {
-    key: "root",
-    storage,
-    keyPrefix: "redux-",
-    //WhiteList
-    //BlackList
-}
+  key: "root",
+  storage,
+  keyPrefix: "redux-",
+  //WhiteList
+  whitelist: ["app"],
+  //BlackList
+};
 
 const rootReducer = combineReducers({
     app: appReducer,

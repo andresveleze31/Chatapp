@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../../utils/axios";
+import { showSnackbar } from "./app";
 
 const initialState = {
   isLoading: false,
@@ -59,9 +60,22 @@ export function LoginUser(formValues) {
             token: response.data.token,
           })
         );
+
+        dispatch(showSnackbar({
+          severity: "success",
+          message: response.data.message
+        }))
       })
       .catch(function (error) {
-        console.log(error);
+        
+        console.log("Hubo un error" + error);
+
+        dispatch(
+          showSnackbar({
+            severity: "error",
+            message: "Email or Password Are Incorrect",
+          })
+        );
       });
   };
 }

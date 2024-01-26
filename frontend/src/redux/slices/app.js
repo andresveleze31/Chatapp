@@ -5,7 +5,13 @@ const initialState = {
     open: false,
     type: "CONTACT", //Can be STARRED, SHARED
   },
+  snackbar: {
+    open: false,
+    severity: "error",
+    message: "Error",
+  },
 };
+
 
 const slice = createSlice({
   name: "app",
@@ -17,6 +23,16 @@ const slice = createSlice({
     },
     updateSidebarType(state, action) {
       state.sidebar.type = action.payload.type;
+    },
+    openSnackbar(state, action) {
+      state.snackbar.open = true;
+      state.snackbar.message = action.payload.message;
+      state.snackbar.severity = action.payload.severity;
+    },
+    closeSnackbar(state, action) {
+      state.snackbar.open = false;
+      state.snackbar.message = "";
+      state.snackbar.severity = "";
     },
   },
 });
@@ -37,4 +53,23 @@ export function updateSidebarType(type) {
       })
     );
   };
+}
+
+export function showSnackbar({ severity, message }) {
+  return async (dispatch, getState) => {
+    dispatch(
+      slice.actions.openSnackbar({
+        message,
+        severity,
+      })
+    );
+
+    setTimeout(() => {
+        dispatch(slice.actions.closeSnackbar());
+    }, 4000)
+  };
+}
+
+export const closeSnackbar = () => async (dispatch, getState) => {
+  dispatch(slice.actions.closeSnackbar());
 }
