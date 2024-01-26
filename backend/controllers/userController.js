@@ -45,8 +45,16 @@ async function getUsers(req, res, next) {
   });
 }
 
-async function getRequests(req, res, next){
-    const requests = await FriendRequest.find({ recipient: req.user._id }).populate("sender", "_id").select("");
+async function getRequests(req, res, next) {
+  const requests = await FriendRequest.find({
+    recipient: req.user._id,
+  }).populate("sender", "_id firstName lastName");
+
+  res.status(200).json({
+    status: "success",
+    data: requests,
+    message: "Friends request Found Successfully",
+  });
 }
 
 async function getFriends(req, res, next) {
@@ -62,4 +70,4 @@ async function getFriends(req, res, next) {
   });
 }
 
-export { updateMe, getUsers };
+export { updateMe, getUsers, getFriends, getRequests };

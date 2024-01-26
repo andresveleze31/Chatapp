@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 import storage from "redux-persist/lib/storage";
 import appReducer from "./slices/app.js";
 import authReducer from "./slices/auth.js";
+
  
 //Slices
 
@@ -10,7 +11,8 @@ const rootPeristConfig = {
   storage,
   keyPrefix: "redux-",
   //WhiteList
-  whitelist: ["app"],
+  manualPersist: true, // Evita la rehidratación automática
+
   //BlackList
 };
 

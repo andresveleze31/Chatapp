@@ -60,7 +60,11 @@ const userSchema = new mongoose.Schema(
         type: mongoose.Schema.ObjectId,
         ref: "User"
       }
-    ]
+    ],
+    status: {
+      type: String,
+      enum: ["Online", "Offline"]
+    }
   },
   {
     timestamps: true,

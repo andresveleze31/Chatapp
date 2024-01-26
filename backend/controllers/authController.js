@@ -120,6 +120,7 @@ async function verifyOTP(req, res, next) {
     status: "Success",
     message: "OTP verified successfully",
     token,
+    user_id: user._id,
   });
 }
 
@@ -149,6 +150,7 @@ async function login(req, res) {
     status: "Success",
     message: "Logged in successfully",
     token,
+    user_id: user._id
   });
 }
 
